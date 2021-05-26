@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<legend style="margin: 10px; padding: 5px; color: black;">Purchases List
+  <a href="{% url 'add_purchase' %}">
+  <button type="submit" class="btn btn-success" style="float: right;">
+    <i class="fas fa-plus"> Add Purchase</i>
+</button></a>
+</legend>
+<form method="get">
+  {{ myFilter.form }}
+  <button class="btn btn-dark rounded" type="submit">Search</button>
+</form><br>
+<table class="table table-striped">
+
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Purchase No</th>
+        <th scope="col">Purchase Date</th>
+        <th scope="col">Product</th>
+        <th scope="col">Box Quantity</th>
+        <th scope="col">Price</th>
+        <th scope="col">Discount</th>
+        <th scope="col">VAT</th>
+        <th scope="col">Total</th>
+        <th scope="col">Payment By</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+        {% for purchase in page_obj %}
+      <tr>
+       
+        <th scope="row"1></th>
+        <td>{{purchase.purchase_no}}</td>
+        <td>{{purchase.date_of_purchase}}</td>
+        <td>{{purchase.product}}</td>
+        <td>{{purchase.box_quantity}}</td>
+        <td>{{purchase.price}}</td>
+        <td>{{purchase.discount}}</td>
+        <td>{{purchase.VAT}}</td>
+        <td>{{purchase.Total}}</td>
+        <td>{{purchase.payment_method}}</td>
+        <td>{{purchase.status}}</td>
+      
+      </tr>
+      {% endfor %}
+    </tbody>
+   
+  </table>
+  <div class="text-center container mt-5">
+    {% if page_obj.has_previous %}
+      <a href="?page={{page_obj.previos_page_number}}"><button type="button" class="btn btn-light">previous</button></a>
+    {% endif %}
+
+    <a><button type="button" class="btn btn-success">{{page_obj.number}}</button></a>
+
+    {% if customer_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}"><button type="button" class="btn btn-light">next</button></a>
+    {% endif %}
+
+  </div>
+{% endblock content%}

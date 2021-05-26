@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<legend style="margin: 10px; padding: 5px; color: black;">Create Purchase 
+    <a href="{% url 'purchase_list' %}">
+    <button type="submit" class="btn btn-success" style="float: right;">
+    <i class="fas fa-list"> Purchases List </i>
+</button></a>
+</legend>
+<hr>
+<form method="POST" style="margin: 10px; padding: 5px;">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-4">
+            {{ form.product|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.box_quantity|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.price|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            {{ form.discount|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.VAT|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.Total|as_crispy_field }}
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-4">
+            {{ form.payment_method|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.status|as_crispy_field }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success" style="float: right;">Save</button>
+</form>
+<br>
+{% endblock %}
