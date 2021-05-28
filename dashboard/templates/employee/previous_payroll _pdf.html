@@ -1,0 +1,37 @@
+{% load static %} {% block content %}
+<style>
+table, th, td {
+  border: 1px solid black;
+  padding: 4px;
+}
+
+</style>
+
+<h1 style="color: #2ea879; font-size: 20px;">TerminalFour BarberShop Salon and Spa</h1>
+<h3 style="font-size: 15px;">Commisions Earned As At {{previous_month}}</h3><hr>
+<table>
+  <thead>
+    <tr>
+      <th>Employee</th>
+      <th >Role</th>
+      <th>Salary Month</th>
+      <th>Customers Served</th>
+      <th>Total Earned</th>
+      <th>Commision this month</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for employee in payroll %}
+    <tr>
+      <td>{{employee.employee_name}}</td>
+      <td>{{employee.role}}</td>
+      <td>{{previous_month}}</td>
+      <td>{{employee.customers_served}}</td>
+      <td>{{employee.monthly_total}}</td>
+      <td>{{employee.commision}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content%}

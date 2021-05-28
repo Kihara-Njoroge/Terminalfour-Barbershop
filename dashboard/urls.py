@@ -15,5 +15,7 @@ urlpatterns = [
     path('employees/', employeeList, name='employees'),
     path('add-employee/', addEmployee, name='add_employee'),
     path('salaries/', payRoll, name='salaries'),
-    path('previous-month-salaries', previousPayRoll, name='previous_payroll')
+    path('previous-month-salaries', previousPayRoll, name='previous_payroll'),
+
+    path('previous-month-salaries_pdf', GeneratePDF.as_view(), name='salary-pdf')
 ]
