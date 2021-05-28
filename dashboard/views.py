@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-from django.forms import inlineformset_factory
+from django.views.generic import View
 from datetime import datetime, date, timedelta
 from django.utils import timezone
 from .models import *
 from .forms import *
 from .filters import *
+from .utils import *
 
 
 # Create your views here.
@@ -244,3 +245,60 @@ def previousPayRoll(request):
                }
 
     return render(request, 'employee/previous_payroll.html', context)
+
+
+class GeneratePDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('employee/previous_payroll _pdf.html')
+        current_mon = datetime.now().month - 1
+        employee = Employee.objects.all()
+        paginator = Paginator(employee, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+        previous_month = date.today().replace(day=1) - timedelta(1)
+        previous_month.strftime("%B")
+
+        payroll = []
+
+        for i in range(len(employee)):
+            employee_name = employee[i]
+            total_prev_mon = Invoice.objects.filter(
+                served_by=employee_name, date_of_services__month=current_mon)
+            monthly_total = sum([i.Total for i in total_prev_mon])
+            role = employee[i].role
+            customers_served = total_prev_mon.count()
+            if role == 'Stylist':
+                commission = 0.5*monthly_total
+            else:
+                commission = 0.4*monthly_total
+
+            payroll_dict = {'employee_name': employee_name, 'role': role,
+                            'monthly_total': monthly_total, 'commision': commission,
+                            'customers_served': customers_served
+                            }
+            payroll.append(payroll_dict)
+
+        context = {'employee_name': employee_name, 'page_obj': page_obj,
+                   'previous_month': previous_month,
+                   'monthly_total': monthly_total,
+                   'commission': commission,
+                   'customers_served': customers_served,
+                   'role': role,
+                   'payroll': payroll,
+
+
+                   }
+        html = template.render(context)
+        name = "TerminalfourCommissions(str(previous_month))"
+        pdf = render_to_pdf('employee/previous_payroll _pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Terminalfour_Commissions_%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
