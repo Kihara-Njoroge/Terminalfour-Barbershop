@@ -21,7 +21,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-8">
+        <div class="col-4">
+            {{ form.branch|as_crispy_field}}
+        </div>   
+        <div class="col-4">
             {{ form.Total|as_crispy_field}}
         </div>   
         <div class="col-4">
