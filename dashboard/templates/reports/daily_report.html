@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<legend style="margin: 10px; padding: 5px; color: black;">Daily Report(Feruzi)</legend>
+  <hr>
+  <table class="table table-striped">
+  
+      <thead>
+        <tr>
+          
+          <th scope="col">Category</th>
+          <th scope="col">Total Customers</th>
+          <th scope="col">Total Amount</th>
+    
+        </tr>
+      </thead>
+      
+      <tbody>
+        <tr>
+            <th scope="row">Shaving</th>
+            <td>{{shave_count}}</td>
+            <td>{{shave_total}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Styling</th>
+            <td>{{styling_count}}</td>
+            <td>{{styling_total}}</td>
+        </tr>
+        <tr>
+            <th scope="row">SPA</th>
+            <td>{{spa_count}}</td>
+            <td>{{spa_total}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Manicure/Pedicure</th>
+            <td>{{manicure_count}}</td>
+            <td>{{manicure_total}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Totals</th>
+            <td>{{total_customers}}</td>
+            <td>{{feruzi_totals}}</td>
+        </tr>
+      </tbody>
+     
+    </table>
+{% endblock %}

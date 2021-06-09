@@ -29,14 +29,36 @@ def dashboard(request):
     purchases_this_mon = Purchase.objects.filter(
         date_of_purchase__month=current_month)
 
+    # monthly report
+    feruzi_monthly_sale = sales_this_mon.filter(branch='feruzi')
+    feruzi_monthly_sales = feruzi_monthly_sale.count()
+    fourways_monthly_sale = sales_this_mon.filter(branch='fourways')
+    fourways_monthly_sales = fourways_monthly_sale.count()
     monthly_sales = sales_this_mon.count()
     monthly_purchases = purchases_this_mon.count()
 
-    monthly_expenses = sum([i.Total for i in purchases_this_mon])
-    monthly_income = sum([i.Total for i in sales_this_mon])
+    fourways_monthly_total = sum([i.Total for i in fourways_monthly_sale])
+    feruzi_monthly_total = sum([i.Total for i in feruzi_monthly_sale])
 
-    data = [monthly_income, monthly_expenses]
-    labels = ["Income", 'Expenses']
+    monthly_mpesa = sales_this_mon.filter(payment_method='Mpesa')
+    feruzi_mpesa_mon = monthly_mpesa.filter(branch='feruzi')
+    feruzi_mpesa_received_mon = sum([i.Total for i in feruzi_mpesa_mon])
+    fourways_mpesa_mon = monthly_mpesa.filter(branch='fourways')
+    fourways_mpesa_received_mon = sum([i.Total for i in fourways_mpesa_mon])
+
+    monthly_cash = sales_this_mon.filter(payment_method='Cash')
+    feruzi_cash_mon = monthly_cash.filter(branch='feruzi')
+    feruzi_cash_received_mon = sum([i.Total for i in feruzi_cash_mon])
+
+    fourways_cash_mon = monthly_cash.filter(branch='fourways')
+    fourways_cash_received_mon = sum([i.Total for i in fourways_cash_mon])
+
+    monthly_bank = sales_this_mon.filter(payment_method='Bank')
+    feruzi_bank_mon = monthly_bank.filter(branch='feruzi')
+    feruzi_bank_received_mon = sum([i.Total for i in feruzi_bank_mon])
+
+    fourways_bank_mon = monthly_mpesa.filter(branch='fourways')
+    fourways_bank_received_mon = sum([i.Total for i in fourways_bank_mon])
 
     # daily sales and purchases report
     sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
@@ -59,6 +81,28 @@ def dashboard(request):
         hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
     bank_received = sum([i.Total for i in bank])
 
+    # branches report
+    feruzi_todays_customers = sales.filter(branch='feruzi').count()
+
+    feruzi_bank = bank.filter(branch='feruzi')
+    feruzi_bank_received = sum([i.Total for i in feruzi_bank])
+    feruzi_cash = cash.filter(branch='feruzi')
+    feruzi_cash_received = sum([i.Total for i in feruzi_cash])
+    feruzi_mpesa = mpesa.filter(branch='feruzi')
+    feruzi_mpesa_received = sum([i.Total for i in feruzi_mpesa])
+    feruzi_total = (feruzi_bank_received +
+                    feruzi_cash_received+feruzi_mpesa_received)
+
+    fourways_todays_customers = sales.filter(branch='fourways').count()
+    fourways_bank = bank.filter(branch='fourways')
+    fourways_bank_received = sum([i.Total for i in fourways_bank])
+    fourways_cash = cash.filter(branch='fourways')
+    fourways_cash_received = sum([i.Total for i in fourways_cash])
+    fourways_mpesa = mpesa.filter(branch='fourways')
+    fourways_mpesa_received = sum([i.Total for i in fourways_mpesa])
+    fourways_total = (fourways_bank_received +
+                      fourways_cash_received+fourways_mpesa_received)
+
     context = {'sales_today': sales_today,
                'monthly_sales': monthly_sales,
                'purchases_today': purchases_today,
@@ -68,10 +112,30 @@ def dashboard(request):
                'cash_received': cash_received,
                'mpesa_received': mpesa_received,
                'bank_received': bank_received,
-               'monthly_expenses': monthly_expenses,
-               'monthly_income': monthly_income,
-               'data': data,
-               'labels': labels,
+               'fourways_mpesa_received': fourways_mpesa_received,
+               'fourways_bank_received': fourways_bank_received,
+               'fourways_cash_received': fourways_cash_received,
+               'feruzi_mpesa_received': feruzi_mpesa_received,
+               'feruzi_cash_received': feruzi_cash_received,
+               'feruzi_bank_received': feruzi_bank_received,
+               'fourways_mpesa_received_mon': fourways_mpesa_received_mon,
+               'fourways_bank_received_mon': fourways_bank_received_mon,
+               'fourways_cash_received_mon': fourways_cash_received_mon,
+               'feruzi_mpesa_received_mon': feruzi_mpesa_received_mon,
+               'feruzi_cash_received_mon': feruzi_cash_received_mon,
+               'feruzi_bank_received_mon': feruzi_bank_received_mon,
+               'fourways_todays_customers': fourways_todays_customers,
+               'feruzi_todays_customers': feruzi_todays_customers,
+               'fourways_total': fourways_total,
+               'feruzi_total': feruzi_total,
+               'fourways_monthly_sales': fourways_monthly_sales,
+               'fourways_monthly_sales': fourways_monthly_sales,
+               'feruzi_monthly_sales': feruzi_monthly_sales,
+               'feruzi_monthly_total': feruzi_monthly_total,
+               'fourways_monthly_total': fourways_monthly_total,
+
+
+
                }
 
     return render(request, 'index.html', context)
@@ -177,19 +241,6 @@ def payRoll(request):
                         }
         payroll.append(payroll_dict)
 
-        form = PayRollForm()
-        if request.POST:
-            form = PayRollForm(request.POST)
-            if form.is_valid():
-                form.employee = employee_name
-                form.month = current_month
-                form.customers_served = customers_served
-                form.total = monthly_total
-                form.commission = commission
-                form.save()
-            else:
-                form = PayRollForm()
-
     context = {'employee_name': employee_name, 'page_obj': page_obj,
                'current_month': current_month,
                'monthly_total': monthly_total,
@@ -197,7 +248,6 @@ def payRoll(request):
                'customers_served': customers_served,
                'role': role,
                'payroll': payroll,
-               'form': form
 
                }
 
@@ -294,6 +344,262 @@ class GeneratePDF(View):
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Terminalfour_Commissions_%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+
+# Feruzi daily Report
+def dailyReport(request):
+    sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+        hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+    feruzi = sales.filter(branch='feruzi')
+    total_customers = feruzi.count()
+
+    shave = feruzi.filter(service=1)
+    spa = feruzi.filter(service=2)
+    styling = feruzi.filter(service=3)
+
+    shave_count = shave.count()
+    spa_count = spa.count()
+    styling_count = styling.count()
+
+    shave_total = sum([i.Total for i in shave])
+    spa_total = sum([i.Total for i in spa])
+    styling_total = sum([i.Total for i in styling])
+
+    feruzi_totals = (shave_total+styling_total+spa_total)
+
+    context = {'total_customers': total_customers,
+               'shave_count': shave_count,
+               'spa_count': spa_count,
+               'styling_count': styling_count,
+               'spa_total': spa_total,
+               'shave_total': shave_total,
+               'styling_total': styling_total,
+               'feruzi_totals': feruzi_totals
+               }
+    return render(request, 'reports/daily_report.html', context)
+
+
+class DailyPDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('reports/daily_report_pdf.html')
+        today = str(date.today())
+
+        sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+            hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+        feruzi = sales.filter(branch='feruzi')
+        total_customers = feruzi.count()
+
+        shave = feruzi.filter(service=1)
+        spa = feruzi.filter(service=2)
+        styling = feruzi.filter(service=3)
+
+        shave_count = shave.count()
+        spa_count = spa.count()
+        styling_count = styling.count()
+
+        shave_total = sum([i.Total for i in shave])
+        spa_total = sum([i.Total for i in spa])
+        styling_total = sum([i.Total for i in styling])
+
+        feruzi_totals = (shave_total+styling_total+spa_total)
+
+        context = {
+            'today': today,
+            'total_customers': total_customers,
+            'shave_count': shave_count,
+            'spa_count': spa_count,
+            'styling_count': styling_count,
+            'spa_total': spa_total,
+            'shave_total': shave_total,
+            'styling_total': styling_total,
+            'feruzi_totals': feruzi_totals
+        }
+
+        html = template.render(context)
+
+        pdf = render_to_pdf('reports/daily_report_pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Daily_Report_Feruzi%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+
+# Foureways Daily Report
+
+def dailyReport2(request):
+    sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+        hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+    fourways = sales.filter(branch='fourways')
+    total_customers = fourways.count()
+
+    shave = fourways.filter(service=1)
+    spa = fourways.filter(service=2)
+    styling = fourways.filter(service=3)
+
+    shave_count = shave.count()
+    spa_count = spa.count()
+    styling_count = styling.count()
+
+    shave_total = sum([i.Total for i in shave])
+    spa_total = sum([i.Total for i in spa])
+    styling_total = sum([i.Total for i in styling])
+
+    fourways_totals = (shave_total+styling_total+spa_total)
+
+    context = {'total_customers': total_customers,
+               'shave_count': shave_count,
+               'spa_count': spa_count,
+               'styling_count': styling_count,
+               'spa_total': spa_total,
+               'shave_total': shave_total,
+               'styling_total': styling_total,
+               'fourways_totals': fourways_totals
+               }
+    return render(request, 'reports/fourways_daily_report.html', context)
+
+
+class DailyPDF2(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('reports/fourways_daily_report_pdf.html')
+        today = str(date.today())
+
+        sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+            hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+        fourways = sales.filter(branch='fourways')
+        total_customers = fourways.count()
+
+        shave = fourways.filter(service=1)
+        spa = fourways.filter(service=2)
+        styling = fourways.filter(service=3)
+
+        shave_count = shave.count()
+        spa_count = spa.count()
+        styling_count = styling.count()
+
+        shave_total = sum([i.Total for i in shave])
+        spa_total = sum([i.Total for i in spa])
+        styling_total = sum([i.Total for i in styling])
+
+        fourways_totals = (shave_total+styling_total+spa_total)
+
+        context = {
+            'today': today,
+            'total_customers': total_customers,
+            'shave_count': shave_count,
+            'spa_count': spa_count,
+            'styling_count': styling_count,
+            'spa_total': spa_total,
+            'shave_total': shave_total,
+            'styling_total': styling_total,
+            'fourways_totals': fourways_totals
+        }
+
+        html = template.render(context)
+
+        pdf = render_to_pdf('reports/fourways_daily_report_pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Daily_Report_Feruzi%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+# Overall Daily Report
+
+
+def overall(request):
+    sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+        hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+
+    daily_customers = sales.count()
+    overall_total = sum([i.Total for i in sales])
+    shave = sales.filter(service=1)
+    shave_count = shave.count()
+    shave_total = sum([i.Total for i in shave])
+
+    spa = sales.filter(service=2)
+    spa_count = spa.count()
+    spa_total = sum([i.Total for i in shave])
+
+    styling = sales.filter(service=3)
+    styling_count = styling.count()
+    styling_total = sum([i.Total for i in styling])
+
+    context = {
+        'styling_count': styling_count,
+        'styling_total': styling_total,
+        'shave_count': shave_count,
+        'shave_total': shave_total,
+        'spa_count': spa_count,
+        'spa_total': spa_total,
+        'daily_customers': daily_customers,
+        'overall_total': overall_total
+    }
+    return render(request, 'reports/overall_report.html', context)
+
+
+class OVERALLPDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('reports/overall_report_pdf.html')
+        today = str(date.today())
+
+        sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+            hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+
+        daily_customers = sales.count()
+        overall_total = sum([i.Total for i in sales])
+        shave = sales.filter(service=1)
+        shave_count = shave.count()
+        shave_total = sum([i.Total for i in shave])
+
+        spa = sales.filter(service=2)
+        spa_count = spa.count()
+        spa_total = sum([i.Total for i in spa])
+
+        styling = sales.filter(service=3)
+        styling_count = styling.count()
+        styling_total = sum([i.Total for i in styling])
+
+        overall_total = (shave_total+styling_total+spa_total)
+
+        context = {
+            'today': today,
+            'styling_count': styling_count,
+            'styling_total': styling_total,
+            'shave_count': shave_count,
+            'shave_total': shave_total,
+            'spa_count': spa_count,
+            'spa_total': spa_total,
+            'daily_customers': daily_customers,
+            'overall_total': overall_total
+        }
+
+        html = template.render(context)
+
+        pdf = render_to_pdf('reports/overall_report_pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Overall_Daily_Report%s.pdf" % (
                 "12341231")
             content = "inline; filename='%s'" % (filename)
             download = request.GET.get("download")

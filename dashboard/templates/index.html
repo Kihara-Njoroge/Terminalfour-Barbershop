@@ -33,7 +33,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Purchases Today</div>
+                                Purchases Today</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{purchases_today}}</div>
                         </div>
                         <div class="col-auto">
@@ -57,7 +57,7 @@
                                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{monthly_sales}}</div>
                                 </div>
                                 <div class="col">
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -97,20 +97,47 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Income Expense Statement</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Monthly Report(FERUZI)</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="myAreaChart">
-                            
-                        </canvas>
+                        
                         <div>
-                            
-         
+                            <table class="table table-striped table-bordered ">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Report</th>
+                                        <th scope="col">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Total Customers Served</th>
+                                        <td>{{feruzi_monthly_sales}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Cash Received</th>
+                                        <td>{{feruzi_cash_received_mon}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Bank Received</th>
+                                        <td>{{feruzi_bank_received_mon}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Mpesa Received</th>
+                                        <td>{{feruzi_mpesa_received_mon}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Total Sales</th>
+                                        <td>{{feruzi_monthly_total}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
                         </div>
                     </div>
-                 
+
                 </div>
             </div>
         </div>
@@ -119,21 +146,41 @@
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Best Sales Of The Month</h6>
-     
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Daily Report(FERUZI)</h6>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="myPieChart"></canvas>
-                        <div>
-                            Best seller
-                        </div>
-                    </div>
-                    <div class="mt-4 text-center small">
-                  
-                    </div>
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <table class="table table-striped table-bordered ">
+                        <thead>
+                            <tr>
+                                <th scope="col">Report</th>
+                                <th scope="col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Total Customers Served</th>
+                                <td>{{feruzi_todays_customers}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Cash Received</th>
+                                <td>{{feruzi_cash_received}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Bank Received</th>
+                                <td>{{feruzi_bank_received}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Mpesa Received</th>
+                                <td>{{feruzi_mpesa_received}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total Sales</th>
+                                <td>{{feruzi_total}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>
@@ -148,13 +195,41 @@
             <!-- Project Card Example -->
             <div class="card shadow mb-5">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Monthly Report</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Monthly Report( FOURWAYS )</h6>
                 </div>
                 <div class="card-body">
                     <div>
-                        <h6>
-                            Bar graph
-                        </h6>
+                        <table class="table table-striped table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Report</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Total Customers Served</th>
+                                    <td>{{fourways_monthly_sales}}</td>
+                                </tr>
+   
+                                <tr>
+                                    <th scope="row">Cash Received</th>
+                                    <td>{{fourways_cash_received_mon}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Bank Received</th>
+                                    <td>{{fourways_bank_received_mon}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Mpesa Received</th>
+                                    <td>{{fourways_mpesa_received_mon}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Total Sales</th>
+                                    <td>{{fourways_monthly_total}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -166,43 +241,40 @@
             <!-- Illustrations -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Today's Report</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Daily Report( FOURWAYS )</h6>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped table-bordered ">
                         <thead>
-                          <tr>
-                            <th scope="col">Today's Report</th>
-                            <th scope="col">Amount</th>
-                          </tr>
+                            <tr>
+                                <th scope="col">Report</th>
+                                <th scope="col">Amount</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <th scope="row">Total Customers Served</th>
-                                <td>{{sales_today}}</td>
+                                <td>{{fourways_todays_customers}}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">Total Purchases</th>
-                                <td>{{total_purchases_today}}</td>
-                            </tr>
+     
                             <tr>
                                 <th scope="row">Cash Received</th>
-                                <td>{{cash_received}}</td>
+                                <td>{{fourways_cash_received}}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Bank Received</th>
-                                <td>{{bank_received}}</td>
+                                <td>{{fourways_bank_received}}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Mpesa Received</th>
-                                <td>{{mpesa_received}}</td>
+                                <td>{{fourways_mpesa_received}}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Total Sales</th>
-                                <td>{{total_sales_today}}</td>
+                                <td>{{fourways_total}}</td>
                             </tr>
                         </tbody>
-                      </table>
+                    </table>
                 </div>
             </div>
 
