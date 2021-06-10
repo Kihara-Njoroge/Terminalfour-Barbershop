@@ -1,10 +1,14 @@
-{% extends 'base.html' %}
-
-{% load static %}
-{% block content %}
-<legend style="margin: 10px; padding: 5px; color: black;">Daily Report(Feruzi)</legend>
-  <hr>
-  <table class="table table-striped">
+{% load static %} {% block content %}
+<style>
+table, th, td {
+  border: 1px solid black;
+  padding: 4px;
+}
+</style>
+<h1 style="color: #2ea879; font-size: 20px;">Overall Monthly Report</h1>
+<h3 style="font-size: 15px;">As At: {{today}}</h3>
+    <hr>
+    <table class="table table-striped">
   
       <thead>
         <tr>
@@ -19,8 +23,8 @@
       <tbody>
         <tr>
             <th scope="row">Shaving</th>
-            <td>{{shave_count}}</td>
-            <td>{{shave_total}}</td>
+            <td>{{shaving_count}}</td>
+            <td>{{shaving_total}}</td>
         </tr>
         <tr>
             <th scope="row">Styling</th>
@@ -34,15 +38,20 @@
         </tr>
         <tr>
             <th scope="row">Manicure/Pedicure</th>
-            <td>{{manicure_count}}</td>
-            <td>{{manicure_total}}</td>
+            <td>20</td>
+            <td>20000</td>
         </tr>
         <tr>
-            <th scope="row">Totals</th>
+            <th scope="row"> </th>
+            <td> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <th scope="row">Overall Totals</th>
             <td>{{total_customers}}</td>
-            <td>{{feruzi_totals}}</td>
+            <td>{{overall_totals}}</td>
         </tr>
       </tbody>
      
     </table>
-{% endblock %}
+{% endblock content%}

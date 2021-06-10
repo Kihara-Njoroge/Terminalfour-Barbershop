@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block content %}
-<legend style="margin: 10px; padding: 5px; color: black;">Salaries For The Month of {{current_month}}
-  <a href="{% url 'previous_payroll' %}">
-  <button type="submit" class="btn btn-success" style="float: right;">
-  Previous Month Salaries
+<legend style="margin: 10px; padding: 5px; color: black;">Fourways Salaries As at {{previous_month}}
+    <a href="{% url 'feruzi-previous-salaries'%}">
+    <button type="submit" class="btn btn-success" style="float: right; margin-right: 20px;">
+    Feruzi Previous Salaries
 </button></a>
 </legend>
 <hr>
@@ -13,7 +13,7 @@
 
     <thead>
       <tr>
-        
+        <th scope="col">#</th>
         <th scope="col">Employee</th>
         <th scope="col">Role</th>
         <th scope="col">Salary Month</th>
@@ -26,17 +26,21 @@
     <tbody>
         {% for employee in payroll %}
       <tr>
+       
+        <th scope="row"1>{{employee.primary_key}}</th>
         <td>{{employee.employee_name}}</td>
         <td>{{employee.role}}</td>
-        <td>{{current_month}}</td>
+        <td>{{previous_month}}</td>
         <td>{{employee.customers_served}}</td>
         <td>{{employee.monthly_total}}</td>
         <td>{{employee.commision}}</td>
       </tr>
       {% endfor %}
     </tbody>
-   
+    
   </table>
+  <a href="{% url 'fourways-salary-pdf' %}">
+  <button type="submit" class="btn btn-success" style="float: right;margin-right: 20px;"><i class="fas fa-file-pdf"> Export To PDF</i></button></a>
   <div class="text-center container mt-5">
     {% if page_obj.has_previous %}
       <a href="?page={{page_obj.previos_page_number}}"><button type="button" class="btn btn-light">previous</button></a>

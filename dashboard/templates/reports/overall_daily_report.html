@@ -1,15 +1,10 @@
-{% load static %} {% block content %}
-<style>
-table, th, td {
-  border: 1px solid black;
-  padding: 4px;
-}
+{% extends 'base.html' %}
 
-</style>
-
-<h1 style="color: #2ea879; font-size: 20px;">TerminalFour Overall Daily Report</h1>
-<h3 style="font-size: 15px;">Date:{{ today }}</h3>
-
+{% load static %}
+{% block content %}
+<div style="margin-bottom: 60px;"></div>
+<legend style="margin: 10px; padding: 5px; color: black;">Overall Daily Report</legend>
+  <hr>
   <table class="table table-striped">
   
       <thead>
@@ -40,20 +35,19 @@ table, th, td {
         </tr>
         <tr>
             <th scope="row">Manicure/Pedicure</th>
-            <td>20</td>
-            <td>20000</td>
+            <td>{{manicure_count}}</td>
+            <td>{{manicure_total}}</td>
         </tr>
         <tr>
-            <th scope="row"> </th>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <th scope="row">Overall Totals</th>
-            <td>{{daily_customers}}</td>
-            <td>{{overall_total}}</td>
+            <th scope="row">Totals</th>
+            <td>{{total_customers}}</td>
+            <td>{{feruzi_totals}}</td>
         </tr>
       </tbody>
      
     </table>
-{% endblock content%}
+    <a href="{% url 'overall_daily_report_pdf' %}">
+      <button type="submit" class="btn btn-success" style="float: right;margin-right: 20px;"><i class="fas fa-file-pdf">
+          Export To PDF</i></button></a>
+  </div>
+{% endblock %}
