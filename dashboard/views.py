@@ -213,9 +213,10 @@ def addEmployee(request):
     return render(request, 'employee/add_employee.html', context)
 
 
-def payRoll(request):
+def FeruzipayRoll(request):
     current_mon = datetime.now().month
-    employee = Employee.objects.all()
+    worker = Employee.objects.all()
+    employee = worker.filter(branch='feruzi')
     paginator = Paginator(employee, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -235,9 +236,11 @@ def payRoll(request):
         else:
             commission = 0.4*monthly_total
 
+        branch = employee[i].branch
+
         payroll_dict = {'employee_name': employee_name, 'role': role,
                         'monthly_total': monthly_total, 'commision': commission,
-                        'customers_served': customers_served
+                        'customers_served': customers_served, 'branch': branch,
                         }
         payroll.append(payroll_dict)
 
@@ -251,12 +254,57 @@ def payRoll(request):
 
                }
 
-    return render(request, 'employee/payroll.html', context)
+    return render(request, 'employee/feruzi_payroll.html', context)
 
 
-def previousPayRoll(request):
+def FourwayspayRoll(request):
+    current_mon = datetime.now().month
+    worker = Employee.objects.all()
+    employee = worker.filter(branch='fourways')
+    paginator = Paginator(employee, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    current_month = datetime.now().strftime("%B")
+
+    payroll = []
+
+    for i in range(len(employee)):
+        employee_name = employee[i]
+        total_this_mon = Invoice.objects.filter(
+            served_by=employee_name, date_of_services__month=current_mon)
+        monthly_total = sum([i.Total for i in total_this_mon])
+        role = employee[i].role
+        customers_served = total_this_mon.count()
+        if role == 'Stylist':
+            commission = 0.5*monthly_total
+        else:
+            commission = 0.4*monthly_total
+
+        branch = employee[i].branch
+
+        payroll_dict = {'employee_name': employee_name, 'role': role,
+                        'monthly_total': monthly_total, 'commision': commission,
+                        'customers_served': customers_served, 'branch': branch,
+                        }
+        payroll.append(payroll_dict)
+
+    context = {'employee_name': employee_name, 'page_obj': page_obj,
+               'current_month': current_month,
+               'monthly_total': monthly_total,
+               'commission': commission,
+               'customers_served': customers_served,
+               'role': role,
+               'payroll': payroll,
+
+               }
+
+    return render(request, 'employee/fourways_payroll.html', context)
+
+
+def FeruzipreviousPayRoll(request):
     current_mon = datetime.now().month - 1
-    employee = Employee.objects.all()
+    worker = Employee.objects.all()
+    employee = worker.filter(branch='feruzi')
     paginator = Paginator(employee, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -294,14 +342,15 @@ def previousPayRoll(request):
 
                }
 
-    return render(request, 'employee/previous_payroll.html', context)
+    return render(request, 'employee/feruzi_previous_payroll.html', context)
 
 
-class GeneratePDF(View):
+class FeruziGeneratePDF(View):
     def get(self, request, *args, **kwargs):
-        template = get_template('employee/previous_payroll _pdf.html')
+        template = get_template('employee/feruzi_previous_payroll_pdf.html')
         current_mon = datetime.now().month - 1
-        employee = Employee.objects.all()
+        worker = Employee.objects.all()
+        employee = worker.filter(branch='feruzi')
         paginator = Paginator(employee, 10)
         page_number = request.GET.get('page', 1)
         page_obj = paginator.get_page(page_number)
@@ -340,7 +389,8 @@ class GeneratePDF(View):
                    }
         html = template.render(context)
         name = "TerminalfourCommissions(str(previous_month))"
-        pdf = render_to_pdf('employee/previous_payroll _pdf.html', context)
+        pdf = render_to_pdf(
+            'employee/feruzi_previous_payroll_pdf.html', context)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Terminalfour_Commissions_%s.pdf" % (
@@ -354,7 +404,194 @@ class GeneratePDF(View):
         return HttpResponse("Not found")
 
 
+def FourwayspreviousPayRoll(request):
+    current_mon = datetime.now().month - 1
+    worker = Employee.objects.all()
+    employee = worker.filter(branch='fourways')
+    paginator = Paginator(employee, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    previous_month = date.today().replace(day=1) - timedelta(1)
+    previous_month.strftime("%B")
+
+    payroll = []
+
+    for i in range(len(employee)):
+        employee_name = employee[i]
+        total_prev_mon = Invoice.objects.filter(
+            served_by=employee_name, date_of_services__month=current_mon)
+        monthly_total = sum([i.Total for i in total_prev_mon])
+        role = employee[i].role
+        customers_served = total_prev_mon.count()
+        if role == 'Stylist':
+            commission = 0.5*monthly_total
+        else:
+            commission = 0.4*monthly_total
+
+        payroll_dict = {'employee_name': employee_name, 'role': role,
+                        'monthly_total': monthly_total, 'commision': commission,
+                        'customers_served': customers_served
+                        }
+        payroll.append(payroll_dict)
+
+    context = {'employee_name': employee_name, 'page_obj': page_obj,
+               'previous_month': previous_month,
+               'monthly_total': monthly_total,
+               'commission': commission,
+               'customers_served': customers_served,
+               'role': role,
+               'payroll': payroll,
+
+
+               }
+
+    return render(request, 'employee/fourways_previous_payroll.html', context)
+
+
+class FourwaysGeneratePDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('employee/fourways_previous_payroll_pdf.html')
+        current_mon = datetime.now().month - 1
+        worker = Employee.objects.all()
+        employee = worker.filter(branch='fourways')
+        paginator = Paginator(employee, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+        previous_month = date.today().replace(day=1) - timedelta(1)
+        previous_month.strftime("%B")
+
+        payroll = []
+
+        for i in range(len(employee)):
+            employee_name = employee[i]
+            total_prev_mon = Invoice.objects.filter(
+                served_by=employee_name, date_of_services__month=current_mon)
+            monthly_total = sum([i.Total for i in total_prev_mon])
+            role = employee[i].role
+            customers_served = total_prev_mon.count()
+            if role == 'Stylist':
+                commission = 0.5*monthly_total
+            else:
+                commission = 0.4*monthly_total
+
+            payroll_dict = {'employee_name': employee_name, 'role': role,
+                            'monthly_total': monthly_total, 'commision': commission,
+                            'customers_served': customers_served
+                            }
+            payroll.append(payroll_dict)
+
+        context = {'employee_name': employee_name, 'page_obj': page_obj,
+                   'previous_month': previous_month,
+                   'monthly_total': monthly_total,
+                   'commission': commission,
+                   'customers_served': customers_served,
+                   'role': role,
+                   'payroll': payroll,
+
+
+                   }
+        html = template.render(context)
+        pdf = render_to_pdf(
+            'employee/fourways_previous_payroll_pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Fourways_Commissions_%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+
+def overallDailyReport(request):
+    feruzi = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+        hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+
+    total_customers = feruzi.count()
+
+    shave = feruzi.filter(service=1)
+    spa = feruzi.filter(service=2)
+    styling = feruzi.filter(service=3)
+
+    shave_count = shave.count()
+    spa_count = spa.count()
+    styling_count = styling.count()
+
+    shave_total = sum([i.Total for i in shave])
+    spa_total = sum([i.Total for i in spa])
+    styling_total = sum([i.Total for i in styling])
+
+    feruzi_totals = (shave_total+styling_total+spa_total)
+
+    context = {'total_customers': total_customers,
+               'shave_count': shave_count,
+               'spa_count': spa_count,
+               'styling_count': styling_count,
+               'spa_total': spa_total,
+               'shave_total': shave_total,
+               'styling_total': styling_total,
+               'feruzi_totals': feruzi_totals
+               }
+    return render(request, 'reports/overall_daily_report.html', context)
+
+
+class OverallDailyPDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('reports/overall_daily_report_pdf.html')
+        today = str(date.today())
+
+        sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
+            hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
+
+        total_customers = sales.count()
+
+        shave = sales.filter(service=1)
+        spa = sales.filter(service=2)
+        styling = sales.filter(service=3)
+
+        shave_count = shave.count()
+        spa_count = spa.count()
+        styling_count = styling.count()
+
+        shave_total = sum([i.Total for i in shave])
+        spa_total = sum([i.Total for i in spa])
+        styling_total = sum([i.Total for i in styling])
+
+        totals = (shave_total+styling_total+spa_total)
+
+        context = {
+            'today': today,
+            'total_customers': total_customers,
+            'shave_count': shave_count,
+            'spa_count': spa_count,
+            'styling_count': styling_count,
+            'spa_total': spa_total,
+            'shave_total': shave_total,
+            'styling_total': styling_total,
+            'totals': totals
+        }
+
+        html = template.render(context)
+
+        pdf = render_to_pdf('reports/overall_daily_report_pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Overall_Daily_Report%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
 # Feruzi daily Report
+
+
 def dailyReport(request):
     sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
         hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
@@ -384,12 +621,12 @@ def dailyReport(request):
                'styling_total': styling_total,
                'feruzi_totals': feruzi_totals
                }
-    return render(request, 'reports/daily_report.html', context)
+    return render(request, 'reports/feruzi_daily_report.html', context)
 
 
 class DailyPDF(View):
     def get(self, request, *args, **kwargs):
-        template = get_template('reports/daily_report_pdf.html')
+        template = get_template('reports/feruzi_daily_report_pdf.html')
         today = str(date.today())
 
         sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
@@ -425,7 +662,7 @@ class DailyPDF(View):
 
         html = template.render(context)
 
-        pdf = render_to_pdf('reports/daily_report_pdf.html', context)
+        pdf = render_to_pdf('reports/feruzi_daily_report_pdf.html', context)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Daily_Report_Feruzi%s.pdf" % (
@@ -439,7 +676,7 @@ class DailyPDF(View):
         return HttpResponse("Not found")
 
 
-# Foureways Daily Report
+# Fourways Daily Report
 
 def dailyReport2(request):
     sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
@@ -600,6 +837,98 @@ class OVERALLPDF(View):
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Overall_Daily_Report%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+# monthly Reports
+
+
+def OverallMonthlyReport(request):
+    current_month = datetime.now().month
+    sales = Invoice.objects.filter(date_of_services__month=current_month)
+
+    total_customers = sales.count()
+
+    shaving = sales.filter(service=1)
+    shaving_count = shaving.count()
+    shaving_total = sum([i.Total for i in shaving])
+
+    spa = sales.filter(service=2)
+    spa_count = spa.count()
+    spa_total = sum([i.Total for i in spa])
+
+    styling = sales.filter(service=3)
+    styling_count = styling.count()
+    styling_total = sum([i.Total for i in styling])
+
+    overall_totals = sum([i.Total for i in sales])
+
+    context = {
+        'shaving_total': shaving_total,
+        'shaving_count': shaving_count,
+        'spa_count': spa_count,
+        'spa_total': spa_total,
+        'styling_count': styling_count,
+        'styling_total': styling_total,
+        'total_customers': total_customers,
+        'overall_totals': overall_totals,
+
+
+    }
+
+    return render(request, 'reports/overall_monthly_report.html', context)
+
+
+class OVERALLMONPDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('reports/overall_monthly_report_pdf.html')
+        current_month = datetime.now().month
+        today = str(date.today())
+        sales = Invoice.objects.filter(date_of_services__month=current_month)
+
+        total_customers = sales.count()
+
+        shaving = sales.filter(service=1)
+        shaving_count = shaving.count()
+        shaving_total = sum([i.Total for i in shaving])
+
+        spa = sales.filter(service=2)
+        spa_count = spa.count()
+        spa_total = sum([i.Total for i in spa])
+
+        styling = sales.filter(service=3)
+        styling_count = styling.count()
+        styling_total = sum([i.Total for i in styling])
+
+        overall_totals = sum([i.Total for i in sales])
+
+        context = {
+            'shaving_total': shaving_total,
+            'shaving_count': shaving_count,
+            'spa_count': spa_count,
+            'spa_total': spa_total,
+            'styling_count': styling_count,
+            'styling_total': styling_total,
+            'total_customers': total_customers,
+            'overall_totals': overall_totals,
+            'current_month ': current_month,
+            'today': today,
+
+
+        }
+
+        html = template.render(context)
+
+        pdf = render_to_pdf('reports/overall_monthly_report_pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Overall_Monthly_Report%s.pdf" % (
                 "12341231")
             content = "inline; filename='%s'" % (filename)
             download = request.GET.get("download")

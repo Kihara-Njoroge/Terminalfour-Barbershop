@@ -110,8 +110,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{% url 'employees' %}">Employees</a>
                         <a class="collapse-item" href="{% url 'add_employee' %}">Add Employee</a>
-                        <a class="collapse-item" href="{% url 'salaries' %}">Payroll</a>
-                        <a class="collapse-item" href="{% url 'previous_payroll' %}">Previous Month Payroll</a>
+                        <a class="collapse-item" href="{% url 'feruzi-salaries' %}">Feruzi Payroll</a>
+                        <a class="collapse-item" href="{% url 'fourways-salaries' %}">Fourways Payroll</a>
+                        <a class="collapse-item" href="{% url 'feruzi-previous-salaries' %}">Feruzi Previous</a>
+                        <a class="collapse-item" href="{% url 'fourways-previous-salaries' %}">Fourways Previous Month</a>
 
                     </div>
                 </div>
@@ -124,9 +126,10 @@
                 </a>
                 <div id="collapsePage5" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{% url 'overall_pdf'%}">' Daily Report</a>
-                        <a class="collapse-item" href="{% url 'daily_report_pdf'%}">Feruzi Daily Report</a>
-                        <a class="collapse-item" href="{% url 'fourways_daily_report_pdf' %}">Fourways Daily Report</a>
+                        <a class="collapse-item" href="{% url 'overall_daily_report'%}">Overall Daily Report</a>
+                        <a class="collapse-item" href="{% url 'feruzi_daily_report'%}">Feruzi Daily Report</a>
+                        <a class="collapse-item" href="{% url 'fourways_daily_report'%}">Fourways Daily Report</a>
+                        <a class="collapse-item" href="{% url 'monthly_overall_report' %}">Overall Monthly Report</a>
                     </div>
                 </div>
             </li>

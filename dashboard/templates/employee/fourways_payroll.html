@@ -2,42 +2,38 @@
 {% load static %}
 
 {% block content %}
-<legend style="margin: 10px; padding: 5px; color: black;">Purchases List
-  <a href="{% url 'add_purchase' %}">
-  <button type="submit" class="btn btn-success" style="float: right;">
-    <i class="fas fa-plus"> Add Purchase</i>
+<legend style="margin: 10px; padding: 5px; color: black;">Fourways Salaries For The Month of {{current_month}}
+  <a href="{% url 'feruzi-salaries' %}">
+  <button type="submit" class="btn btn-success" style="float: right; margin-right: 20px;">
+  Feruzi Payroll
 </button></a>
 </legend>
-<form method="get">
-  {{ myFilter.form }}
-  <button class="btn btn-dark rounded" type="submit">Search</button>
-</form><br>
+<hr>
 <table class="table table-striped">
 
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
+        
+        <th scope="col">Employee</th>
         <th scope="col">Role</th>
         <th scope="col">Branch</th>
-        <th scope="col">Email</th>
-        <th scope="col">Phone</th>
-        <th scope="col">ID No.</th>
+        <th scope="col">Salary Month</th>
+        <th scope="col">Customers Served</th>
+        <th scope="col">Total Earned</th>
+        <th scope="col">Commision this month</th>
       </tr>
     </thead>
     
     <tbody>
-        {% for employee in page_obj %}
+        {% for employee in payroll %}
       <tr>
-       
-        <th scope="row"1></th>
-        <td>{{employee.name}}</td>
+        <td>{{employee.employee_name}}</td>
         <td>{{employee.role}}</td>
         <td>{{employee.branch}}</td>
-        <td>{{employee.email}}</td>
-        <td>{{employee.phone}}</td>
-        <td>{{employee.id_number}}</td>
-      
+        <td>{{current_month}}</td>
+        <td>{{employee.customers_served}}</td>
+        <td>{{employee.monthly_total}}</td>
+        <td>{{employee.commision}}</td>
       </tr>
       {% endfor %}
     </tbody>
