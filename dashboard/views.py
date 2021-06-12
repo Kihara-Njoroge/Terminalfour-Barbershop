@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.views.generic import View
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils.decorators import method_decorator
 from datetime import datetime, date, timedelta
 from django.utils import timezone
 from .models import *
@@ -14,8 +18,33 @@ def home(request):
     context = {}
     return render(request, 'home.html', context)
 
+# login
+
+
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')
+        else:
+            messages.info(request, 'Incorrect Username or Password!')
+    context = {}
+    return render(request, 'login_page.html', context)
+
+# logout function
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
 
 # Dashboard
+
+
+@login_required(login_url='login')
 def dashboard(request):
     current_month = datetime.now().month
 
@@ -141,18 +170,20 @@ def dashboard(request):
     return render(request, 'index.html', context)
 
 
+@login_required(login_url='login')
 def invoiceList(request):
-    invoices = Invoice.objects.all()
-    myFilter = InvoiceFilter(request.GET, queryset=invoices)
+    invoice = Invoice.objects.all()
+    myFilter = InvoiceFilter(request.GET, queryset=invoice)
     invoices = myFilter.qs
     paginator = Paginator(invoices, 10)
-    page_number = request.GET.get('page', 1)
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {'invoices': invoices,
                'page_obj': page_obj, 'myFilter': myFilter}
     return render(request, 'invoice\invoices_list.html', context)
 
 
+@login_required(login_url='login')
 def addInvoice(request):
     form = InvoiceForm()
     if request.method == 'POST':
@@ -165,12 +196,13 @@ def addInvoice(request):
 
 
 # Purschases
+@login_required(login_url='login')
 def purchaseList(request):
-    purchases = Purchase.objects.all()
-    myFilter = PurchaseFilter(request.GET, queryset=purchases)
+    purchase = Purchase.objects.all()
+    myFilter = PurchaseFilter(request.GET, queryset=purchase)
     purchases = myFilter.qs
     paginator = Paginator(purchases, 10)
-    page_number = request.GET.get('page', 1)
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {'purchases': purchases,
                'page_obj': page_obj, 'myFilter': myFilter}
@@ -178,6 +210,7 @@ def purchaseList(request):
     return render(request, 'purchases\purchases_list.html', context)
 
 
+@login_required(login_url='login')
 def addPurchase(request):
     form = PurchaseForm()
     if request.method == 'POST':
@@ -190,17 +223,33 @@ def addPurchase(request):
     return render(request, 'purchases\purchase_add.html', context)
 
 
-def employeeList(request):
+@login_required(login_url='login')
+def FeruziEmployeeList(request):
     employee = Employee.objects.all()
+    employee = employee.filter(branch='feruzi')
     paginator = Paginator(employee, 10)
-    page_number = request.GET.get('page', 1)
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {'employee': employee, 'page_obj': page_obj, }
 
-    return render(request, 'employee/employees.html', context)
+    return render(request, 'employee/feruzi_employees.html', context)
 
 
+@login_required(login_url='login')
+def FourwaysEmployeeList(request):
+    employee = Employee.objects.all()
+    employee = employee.filter(branch='fourways')
+    paginator = Paginator(employee, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {'employee': employee, 'page_obj': page_obj, }
+
+    return render(request, 'employee/fourways_employees.html', context)
+
+
+@login_required(login_url='login')
 def addEmployee(request):
     form = EmployeeForm()
     if request.method == 'POST':
@@ -213,6 +262,7 @@ def addEmployee(request):
     return render(request, 'employee/add_employee.html', context)
 
 
+@login_required(login_url='login')
 def FeruzipayRoll(request):
     current_mon = datetime.now().month
     worker = Employee.objects.all()
@@ -257,6 +307,7 @@ def FeruzipayRoll(request):
     return render(request, 'employee/feruzi_payroll.html', context)
 
 
+@login_required(login_url='login')
 def FourwayspayRoll(request):
     current_mon = datetime.now().month
     worker = Employee.objects.all()
@@ -301,6 +352,7 @@ def FourwayspayRoll(request):
     return render(request, 'employee/fourways_payroll.html', context)
 
 
+@login_required(login_url='login')
 def FeruzipreviousPayRoll(request):
     current_mon = datetime.now().month - 1
     worker = Employee.objects.all()
@@ -345,6 +397,7 @@ def FeruzipreviousPayRoll(request):
     return render(request, 'employee/feruzi_previous_payroll.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class FeruziGeneratePDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('employee/feruzi_previous_payroll_pdf.html')
@@ -404,6 +457,7 @@ class FeruziGeneratePDF(View):
         return HttpResponse("Not found")
 
 
+@login_required(login_url='login')
 def FourwayspreviousPayRoll(request):
     current_mon = datetime.now().month - 1
     worker = Employee.objects.all()
@@ -448,6 +502,7 @@ def FourwayspreviousPayRoll(request):
     return render(request, 'employee/fourways_previous_payroll.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class FourwaysGeneratePDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('employee/fourways_previous_payroll_pdf.html')
@@ -506,6 +561,7 @@ class FourwaysGeneratePDF(View):
         return HttpResponse("Not found")
 
 
+@login_required(login_url='login')
 def overallDailyReport(request):
     feruzi = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
         hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
@@ -538,6 +594,7 @@ def overallDailyReport(request):
     return render(request, 'reports/overall_daily_report.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class OverallDailyPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/overall_daily_report_pdf.html')
@@ -592,6 +649,7 @@ class OverallDailyPDF(View):
 # Feruzi daily Report
 
 
+@login_required(login_url='login')
 def dailyReport(request):
     sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
         hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
@@ -624,6 +682,7 @@ def dailyReport(request):
     return render(request, 'reports/feruzi_daily_report.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class DailyPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/feruzi_daily_report_pdf.html')
@@ -677,7 +736,7 @@ class DailyPDF(View):
 
 
 # Fourways Daily Report
-
+@login_required(login_url='login')
 def dailyReport2(request):
     sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
         hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
@@ -710,6 +769,7 @@ def dailyReport2(request):
     return render(request, 'reports/fourways_daily_report.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class DailyPDF2(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/fourways_daily_report_pdf.html')
@@ -764,6 +824,7 @@ class DailyPDF2(View):
 # Overall Daily Report
 
 
+@login_required(login_url='login')
 def overall(request):
     sales = Invoice.objects.filter(date_of_services__gte=timezone.now().replace(
         hour=0, minute=0, second=0), date_of_services__lte=timezone.now().replace(hour=23, minute=59, second=59))
@@ -795,6 +856,7 @@ def overall(request):
     return render(request, 'reports/overall_report.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class OVERALLPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/overall_report_pdf.html')
@@ -846,13 +908,13 @@ class OVERALLPDF(View):
             return response
         return HttpResponse("Not found")
 
+
 # monthly Reports
-
-
+@login_required(login_url='login')
 def OverallMonthlyReport(request):
     current_month = datetime.now().month
     sales = Invoice.objects.filter(date_of_services__month=current_month)
-
+    current_mon = datetime.now().strftime("%B")
     total_customers = sales.count()
 
     shaving = sales.filter(service=1)
@@ -878,6 +940,7 @@ def OverallMonthlyReport(request):
         'styling_total': styling_total,
         'total_customers': total_customers,
         'overall_totals': overall_totals,
+        'current_mon': current_mon,
 
 
     }
@@ -885,6 +948,7 @@ def OverallMonthlyReport(request):
     return render(request, 'reports/overall_monthly_report.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class OVERALLMONPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/overall_monthly_report_pdf.html')
@@ -929,6 +993,64 @@ class OVERALLMONPDF(View):
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Overall_Monthly_Report%s.pdf" % (
+                "12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+
+@method_decorator(login_required, name='dispatch')
+class PreviousOVERALLPDF(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('reports/previou_mon_overall_report.html')
+        current_month = datetime.now().month - 1
+        previous_month = date.today().replace(day=1) - timedelta(1)
+        previous_month.strftime("%B")
+        today = str(date.today())
+        sales = Invoice.objects.filter(date_of_services__month=current_month)
+
+        total_customers = sales.count()
+
+        shaving = sales.filter(service=1)
+        shaving_count = shaving.count()
+        shaving_total = sum([i.Total for i in shaving])
+
+        spa = sales.filter(service=2)
+        spa_count = spa.count()
+        spa_total = sum([i.Total for i in spa])
+
+        styling = sales.filter(service=3)
+        styling_count = styling.count()
+        styling_total = sum([i.Total for i in styling])
+
+        overall_totals = sum([i.Total for i in sales])
+
+        context = {
+            'shaving_total': shaving_total,
+            'shaving_count': shaving_count,
+            'spa_count': spa_count,
+            'spa_total': spa_total,
+            'styling_count': styling_count,
+            'styling_total': styling_total,
+            'total_customers': total_customers,
+            'overall_totals': overall_totals,
+            'current_month ': current_month,
+            'today': today,
+            'previous_month': previous_month
+
+
+        }
+
+        html = template.render(context)
+
+        pdf = render_to_pdf('reports/previou_mon_overall_report.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Previous_Month_Overall_Report%s.pdf" % (
                 "12341231")
             content = "inline; filename='%s'" % (filename)
             download = request.GET.get("download")

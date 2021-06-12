@@ -4,13 +4,10 @@ table, th, td {
   border: 1px solid black;
   padding: 4px;
 }
-
 </style>
-
-<h1 style="color: #2ea879; font-size: 20px;">TerminalFour Barbershop, Salon And Spa 
-  <br> <span style="color: black; font-size: 16px;">FOURWAYS Daily Report For:{{ today }} </span></h1>
-
-  <table class="table table-striped">
+<h1 style="color: #2ea879; font-size: 20px;">TerminalFour Barbershop Salon And Spa
+    <br>Overall Monthly Report: As At {{previous_month}}</h1>
+    <table class="table table-striped">
   
       <thead>
         <tr>
@@ -25,11 +22,11 @@ table, th, td {
       <tbody>
         <tr>
             <th scope="row">Shaving</th>
-            <td>{{shave_count}}</td>
-            <td>{{shave_total}}</td>
+            <td>{{shaving_count}}</td>
+            <td>{{shaving_total}}</td>
         </tr>
         <tr>
-            <th scope="row">Sytling</th>
+            <th scope="row">Styling</th>
             <td>{{styling_count}}</td>
             <td>{{styling_total}}</td>
         </tr>
@@ -49,9 +46,9 @@ table, th, td {
             <td> </td>
         </tr>
         <tr>
-            <th scope="row">Totals</th>
+            <th scope="row">Overall Totals</th>
             <td>{{total_customers}}</td>
-            <td>{{fourways_totals}}</td>
+            <td>{{overall_totals}}</td>
         </tr>
       </tbody>
      

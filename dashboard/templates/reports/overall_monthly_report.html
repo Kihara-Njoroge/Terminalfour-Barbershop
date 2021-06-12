@@ -7,7 +7,8 @@ table, th, td {
 }
 </style>
 <div style="margin-bottom: 60px;">
-  <legend style="margin: 10px; padding: 5px; color: black;">Overall Monthly Report</legend>
+  <legend style="margin: 10px; padding: 5px; color: black;">Overall Monthly Report 
+  For The Month Of {{current_mon}}</legend>
   <hr>
   <table class="table table-striped">
   
@@ -55,9 +56,10 @@ table, th, td {
       </tbody>
      
     </table>
+    <div style="margin-bottom: 40px;">
     <a href="{% url 'monthly_overall_report_pdf' %}">
       <button type="submit" class="btn btn-success" style="float: right;margin-right: 20px;"><i class="fas fa-file-pdf">
           Export To PDF</i></button></a>
-
+        </div>
 
 {% endblock content%}

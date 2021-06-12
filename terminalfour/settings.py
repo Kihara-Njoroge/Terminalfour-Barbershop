@@ -46,6 +46,8 @@ INSTALLED_APPS = [
 
     'dashboard',
 
+    'storages',
+
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,20 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
+# AWS configuration
+AWS_QUERYSTRING_AUTH = False
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+AWS_ACCESS_KEY_ID = 'AKIA2BLYWF2X73Q6LPGX'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'terminal-four'
+
+
+# smtp configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'kiharajoseph72@gmail.com'
+EMAIL_HOST_PASSWORD = 'babuuh12'

@@ -4,10 +4,7 @@
 
 {% block content %}
 <legend style="margin: 10px; padding: 5px; color: black;">Add Employee
-    <a href="{% url 'employees' %}">
-        <button type="submit" class="btn btn-success" style="float: right;">
-            <i class="fas fa-list"> Employee List </i>
-        </button></a>
+
 </legend>
 <hr>
 <form method="POST" style="margin: 10px; padding: 5px;">
@@ -29,6 +26,9 @@
         </div>
         <div class="col-4">
             {{ form.role|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.branch|as_crispy_field }}
         </div>
     </div>
     <div class="row">

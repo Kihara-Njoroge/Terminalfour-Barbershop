@@ -64,8 +64,7 @@
                 </a>
                 <div id="collapsePage2" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{% url 'add_invoice' %}">Add Invoice</a>
-                        <a class="collapse-item" href="">POS Invoice</a>
+                        <a class="collapse-item" href="{% url 'add_invoice' %}">POS</a>
                         <a class="collapse-item" href="{% url 'invoices' %}">Invoice List</a>
 
                     </div>
@@ -86,21 +85,6 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePage"
-                    aria-expanded="true" aria-controls="collapsePage">
-                    <i class="fas fa-capsules"></i>
-                    <span>Products</span>
-                </a>
-                <div id="collapsePage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="">Product List</a>
-                        <a class="collapse-item" href="">Add Products</a>
-
-                    </div>
-                </div>
-            </li>
-
-            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePage3"
                     aria-expanded="true" aria-controls="collapsePage3">
                     <i class="far fa-id-card"></i>
@@ -108,11 +92,12 @@
                 </a>
                 <div id="collapsePage3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{% url 'employees' %}">Employees</a>
+                        <a class="collapse-item" href="{% url 'feruzi_employees' %}">Feruzi Employees</a>
+                        <a class="collapse-item" href="{% url 'fourways_employees' %}">Fourways Employees</a>
                         <a class="collapse-item" href="{% url 'add_employee' %}">Add Employee</a>
                         <a class="collapse-item" href="{% url 'feruzi-salaries' %}">Feruzi Payroll</a>
                         <a class="collapse-item" href="{% url 'fourways-salaries' %}">Fourways Payroll</a>
-                        <a class="collapse-item" href="{% url 'feruzi-previous-salaries' %}">Feruzi Previous</a>
+                        <a class="collapse-item" href="{% url 'feruzi-previous-salaries' %}">Feruzi Previous Month</a>
                         <a class="collapse-item" href="{% url 'fourways-previous-salaries' %}">Fourways Previous Month</a>
 
                     </div>
@@ -130,6 +115,7 @@
                         <a class="collapse-item" href="{% url 'feruzi_daily_report'%}">Feruzi Daily Report</a>
                         <a class="collapse-item" href="{% url 'fourways_daily_report'%}">Fourways Daily Report</a>
                         <a class="collapse-item" href="{% url 'monthly_overall_report' %}">Overall Monthly Report</a>
+                        <a class="collapse-item" href="{% url 'previous_month_overall_report_pdf' %}">Previous Month Report</a>
                     </div>
                 </div>
             </li>
@@ -189,7 +175,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Hello,
-                                    <strong>Admin</strong></span>
+                                    <strong>{{request.user}}</strong></span>
                                 <i class="fas fa-power-off"></i>
                             </a>
                             <!-- Dropdown - User Information -->
@@ -247,7 +233,7 @@
                     <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Logout</a>
+                        <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
                     </div>
                 </div>
             </div>
