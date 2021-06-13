@@ -25,9 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'h=bbn)@&oma(&ve@g^5e7++i5m38814lo(!%x)yhv@f@b=1ggb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
+                 'terminalfoursalon.herokuapp.com', 'www.terminalfoursalon.online', 'terminalfoursalon.online']
 
 
 # Application definition
