@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
-from pathlib import Path
 import os
+from pathlib import Path
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'h=bbn)@&oma(&ve@g^5e7++i5m38814lo(!%x)yhv@f@b=1ggb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
                  'terminalfoursalon.herokuapp.com', 'www.terminalfoursalon.online', 'terminalfoursalon.online']
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'dashboard',
 
     'storages',
+
 
 ]
 
@@ -88,7 +89,7 @@ WSGI_APPLICATION = 'terminalfour.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -142,8 +143,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 # AWS configuration
 AWS_QUERYSTRING_AUTH = False
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = 'AKIA2BLYWF2X73Q6LPGX'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'terminal-four'

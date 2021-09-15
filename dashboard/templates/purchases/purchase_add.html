@@ -17,7 +17,7 @@
             {{ form.product|as_crispy_field }}
         </div>
         <div class="col-4">
-            {{ form.box_quantity|as_crispy_field }}
+            {{ form.quantity|as_crispy_field }}
         </div>
         <div class="col-4">
             {{ form.price|as_crispy_field }}
@@ -38,6 +38,9 @@
     <div class="row">
         <div class="col-4">
             {{ form.payment_method|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.branch|as_crispy_field }}
         </div>
         <div class="col-4">
             {{ form.status|as_crispy_field }}

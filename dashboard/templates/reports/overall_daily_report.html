@@ -18,32 +18,29 @@
       </thead>
       
       <tbody>
+        {% for item in services_list %}
         <tr>
-            <th scope="row">Shaving</th>
-            <td>{{shave_count}}</td>
-            <td>{{shave_total}}</td>
+            <th scope="row">{{item.name}}</th>
+            <td>{{item.total_count}}</td>
+            <td>{{item.total_amount}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <th scope="row">Services Totals</th>
+          <th>{{total_customers}}</th>
+          <th>{{total_income}}</th>
         </tr>
         <tr>
-            <th scope="row">Styling</th>
-            <td>{{styling_count}}</td>
-            <td>{{styling_total}}</td>
-        </tr>
-        <tr>
-            <th scope="row">SPA</th>
-            <td>{{spa_count}}</td>
-            <td>{{spa_total}}</td>
-        </tr>
-        <tr>
-            <th scope="row">Manicure/Pedicure</th>
-            <td>{{manicure_count}}</td>
-            <td>{{manicure_total}}</td>
-        </tr>
-        <tr>
-            <th scope="row">Totals</th>
-            <td>{{total_customers}}</td>
-            <td>{{feruzi_totals}}</td>
+          <th scope="row">Products Sold</th>
+          <th>{{sales_count}}</th>
+          <th>{{sales_amount}}</th>
         </tr>
       </tbody>
+      <tr>
+        <th scope="row">Totals</th>
+        <th> </th>
+        <th>{{ sales_amount|add:total_income}}</th>
+      </tr>
      
     </table>
     <a href="{% url 'overall_daily_report_pdf' %}">

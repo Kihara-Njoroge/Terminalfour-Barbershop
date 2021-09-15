@@ -1,0 +1,61 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<legend style="margin: 10px; padding: 5px; color: black;">Name: {{employee.name}}  
+  <h4 style="float:right; margin-right: 30px;">Earning as at {{previous_month}} :  Kshs.{{total}}</h4>
+</legend>
+<form method="get">
+  {{ myFilter.form }}
+  <button class="btn btn-dark rounded" type="submit">Search</button>
+  <a href="{% url 'employee-history' employee %}">
+    <button type="submit" class="btn btn-success" style="float: right; margin-right: 15px;">
+      <i class="fas fa-arrow-left"> Current Month</i>
+  </button></a>
+</form><br>
+<table class="table table-striped">
+
+    <thead>
+      <tr>
+        <th scope="col">Invoice No</th>
+        <th scope="col">Date</th>
+        <th scope="col">Service</th>
+        <th scope="col">Paid Via</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Percentage</th>
+        <th scope="col">Commission</th>
+        
+      </tr>
+    </thead>
+    
+    <tbody>
+    {% for invoice in page_obj %}
+      <tr>
+        <td>{{invoice.invoice_no}}</td>
+        <td>{{invoice.date_of_services}}</td>
+        <td>{{invoice.service}}</td>
+        <td>{{invoice.payment_method}}</td>
+        <td>{{invoice.Total}}</td>
+        <td>{{invoice.get_percentage}}</td>
+        <td>{{invoice.get_commission}}</td>
+      
+      </tr>
+      <tr>{{invoice.get_total_commission}}</tr>
+      {% endfor %}
+    </tbody>
+   
+  </table>
+  <div class="text-center container mt-5">
+    {% if page_obj.has_previous %}
+      <a class="poppins-font p-2" href="?page={{page_obj.previous_page_number}}">previous</a>
+    {% endif %}
+
+    <a class="p-2 active-btn poppins-font text-dark" style="background-color:lightgreen;">{{page_obj.number}}</a>
+    
+    {% if page_obj.has_next %}
+      <a class="p-2 poppins-font" href="?page={{ page_obj.next_page_number }}">next</a>
+    {% endif %}
+
+  </div>
+{% endblock content%}

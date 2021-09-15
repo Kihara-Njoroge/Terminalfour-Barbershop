@@ -15,8 +15,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Sales Today</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{sales_today}}</div>
+                               Total Sales Today</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{total_income}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-wallet fa-3x" style="color: #36b9cc;"></i>
@@ -33,8 +33,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Purchases Today</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{purchases_today}}</div>
+                                Feruzi Sales Today</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{feruzi_total}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-folder-minus fa-3x" style="color:#e74a3b"></i>
@@ -50,11 +50,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Sales This Month
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Fourways Sales Today
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{monthly_sales}}</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{fourways_total}}</div>
                                 </div>
                                 <div class="col">
 
@@ -71,16 +71,16 @@
 
         <!-- Pending Requests Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Purchase This Month</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ monthly_purchases }}</div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Monthly Sales</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_income_mon }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-3x" style="color: #e74a3b;"></i>
+                            <i class="fas fa-calendar fa-3x" style="color: #e63;"></i>
                         </div>
                     </div>
                 </div>
@@ -113,8 +113,8 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th scope="row">Total Customers Served</th>
-                                        <td>{{feruzi_monthly_sales}}</td>
+                                        <th scope="row">Products Sales</th>
+                                        <td>{{feruzi_prod_mon_sales}}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Cash Received</th>
@@ -159,8 +159,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">Total Customers Served</th>
-                                <td>{{feruzi_todays_customers}}</td>
+                                <th scope="row">Products Sales</th>
+                                <td>{{feruzi_prod_sales}}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Cash Received</th>
@@ -208,8 +208,8 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th scope="row">Total Customers Served</th>
-                                    <td>{{fourways_monthly_sales}}</td>
+                                    <th scope="row">Products Sales</th>
+                                    <td>{{fourways_prod_mon_sales}}</td>
                                 </tr>
    
                                 <tr>
@@ -253,8 +253,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">Total Customers Served</th>
-                                <td>{{fourways_todays_customers}}</td>
+                                <th scope="row">Products Sales</th>
+                                <td>{{fourways_prod_sales}}</td>
                             </tr>
      
                             <tr>

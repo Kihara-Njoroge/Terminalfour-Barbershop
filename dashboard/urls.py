@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import *
 
 urlpatterns = [
@@ -8,26 +10,30 @@ urlpatterns = [
     path('invoices/', invoiceList, name='invoices'),
     path('add-invoice/', addInvoice, name='add_invoice'),
 
+    path('cart/', cartPage, name='cart'),
+    path('products/', Products, name='products'),
+    path('add-products', addProduct, name='add_product'),
+    path('add-sales', addSales, name='add_sales'),
+    path('sales', salesList, name='sales'),
+
+
     path('purchase/', purchaseList, name='purchase_list'),
     path('add_purchase/', addPurchase, name='add_purchase'),
 
-    path('feruzi_employees/', FeruziEmployeeList, name='feruzi_employees'),
-    path('fourways_employees/', FourwaysEmployeeList, name='fourways_employees'),
+    path('employees/', EmployeeList, name='employees'),
+    path('employees/<str:name>/', employeeEarning, name='employee-history'),
+    path('employees/<str:name>/previous-month/', employeePreviousEarning, name='employee-prev-history'),
     path('add-employee/', addEmployee, name='add_employee'),
-    path('feruzi_salaries/', FeruzipayRoll, name='feruzi-salaries'),
-    path('fourways_salaries/', FourwayspayRoll, name='fourways-salaries'),
-    path('feruzi_previous_salaries/', FeruzipreviousPayRoll,
-         name='feruzi-previous-salaries'),
+    
+    path('commissions-earned/', Payroll, name='salaries'),
+    path('previous_month_salaries/', previousPayRoll,
+         name='previous-salaries'),
     path('feruzi_previous-month-salaries_pdf',
-         FeruziGeneratePDF.as_view(), name='feruzi-salary-pdf'),
-    path('fourways_previous_salaries/', FourwayspreviousPayRoll,
-         name='fourways-previous-salaries'),
-    path('fourways_previous-month-salaries_pdf',
-         FourwaysGeneratePDF.as_view(), name='fourways-salary-pdf'),
-
-
-    path('overall-daily-report', overallDailyReport, name='overall_daily_report'),
-    path('overall_daily-report-pdf', OverallDailyPDF.as_view(),
+         GeneratePDF.as_view(), name='feruzi-salary-pdf'),
+    path('signup/', signup, name='signup'),
+    path('overall-daily-report/', overallDailyReport,
+         name='overall_daily_report'),
+    path('overall_daily-report-pdf/', OverallDailyPDF.as_view(),
          name='overall_daily_report_pdf'),
 
     path('feruzi_daily-report', dailyReport, name='feruzi_daily_report'),
@@ -36,9 +42,10 @@ urlpatterns = [
     path('fourways-daily-report', dailyReport2, name='fourways_daily_report'),
     path('fourways-daily-report-pdf', DailyPDF2.as_view(),
          name='fourways_daily_report_pdf'),
-    path('overall-report', overall, name='overall_report'),
-    path('overall-pdf', OVERALLPDF.as_view(), name='overall_pdf'),
-
+    path('customers', CustomerList, name='customer_list'),
+    path('customers/<str:name>/', CustomerHistory, name='customer-history'),
+    path('customers-purchases/<str:name>/', CustomerSalesHistory, name='customer-purchases'),
+    path('add-customers', addCustomer, name='add-customer'),
 
     path('monthly-overall-report', OverallMonthlyReport,
          name='monthly_overall_report'),
@@ -70,3 +77,5 @@ urlpatterns = [
 
 
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

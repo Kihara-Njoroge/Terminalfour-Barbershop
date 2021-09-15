@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<legend style="margin: 10px; padding: 5px; color: black;">Salaries For The Month of {{current_month}}
+
+</legend>
+<hr>
+<table class="table table-striped">
+
+    <thead>
+      <tr>
+        
+        <th scope="col">Employee</th>
+        <th scope="col">Role</th>
+        <th scope="col">Salary Month</th>
+        <th scope="col">Customers Served</th>
+        <th scope="col">Total Earned</th>
+        <th scope="col">Commision this month</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+      {% for invoice in page_obj %}
+      <tr>
+       
+        <th scope="row"1></th>
+        <td>{{invoice.invoice_no}}</td>
+        <td>{{invoice.date_of_services}}</td>
+        <td>{{invoice.service}}</td>
+        <td>{{invoice.payment_method}}</td>
+        <td>{{invoice.Total}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+   
+  </table>
+  <div class="text-center container mt-5">
+    {% if page_obj.has_previous %}
+      <a href="?page={{page_obj.previos_page_number}}"><button type="button" class="btn btn-light">previous</button></a>
+    {% endif %}
+
+    <a><button type="button" class="btn btn-success">{{page_obj.number}}</button></a>
+
+    {% if customer_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}"><button type="button" class="btn btn-light">next</button></a>
+    {% endif %}
+
+  </div>
+{% endblock content%}
