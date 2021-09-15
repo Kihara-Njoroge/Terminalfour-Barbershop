@@ -1,0 +1,50 @@
+{% load static %} {% block content %}
+<style>
+table, th, td {
+  border: 1px solid black;
+  padding: 4px;
+}
+</style>
+<h1 style="color: #2ea879; font-size: 20px;">TerminalFour Barbershop Salon And Spa
+    <br>Overall Monthly Report: As At {{previous_month}}</h1>
+    <table class="table table-striped">
+  
+      <thead>
+        <tr>
+          
+          <th scope="col">Category</th>
+          <th scope="col">Total Customers</th>
+          <th scope="col">Total Amount</th>
+    
+        </tr>
+      </thead>
+      
+      <tbody>
+        {% for item in services_list %}
+        <tr>
+            <th scope="row">{{item.name}}</th>
+            <td>{{item.total_count}}</td>
+            <td>{{item.total_amount}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <th scope="row">Services Totals</th>
+          <th>{{total_customers}}</th>
+          <th>{{total_income}}</th>
+        </tr>
+        <tr>
+          <th scope="row">Products Sold</th>
+          <th>{{sales_count}}</th>
+          <th>{{sales_amount}}</th>
+        </tr>
+      </tbody>
+      <tr>
+        <th scope="row">Totals</th>
+        <th> </th>
+        <th>{{ sales_amount|add:total_income}}</th>
+      </tr>
+
+      </tbody>
+     
+    </table>
+{% endblock content%}

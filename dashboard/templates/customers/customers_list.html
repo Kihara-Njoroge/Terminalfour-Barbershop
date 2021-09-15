@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<legend style="margin: 10px; padding: 5px; color: black; ">TerminalFour Clients
+  <a href="{% url 'add-customer' %}">
+  <button type="submit" class="btn btn-success" style="float: right;margin-right: 15px;">
+    <i class="fas fa-plus"> Add Customer</i>
+</button></a>
+</legend>
+<form method="get">
+    {{ myFilter.form }}
+    <button class="btn btn-dark rounded" type="submit">Search</button>
+</form><br>
+<table class="table table-striped">
+
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Phone</th>
+        <th scope="col">BirthDay</th>
+        <th scope="col">#</th>
+       
+      </tr>
+    </thead>
+    
+    <tbody>
+        {% for customer in page_obj %}
+      <tr>
+       
+        <th scope="row"1></th>
+        <td>{{customer.name}}</td>
+        <td>{{customer.phone}}</td>
+        <td>{{customer.birthday}}</td>  
+        <td>
+            <a href="{% url 'customer-history' customer.name %}">
+                <button type="button" class="btn-sm btn-info">Views Records</button></a></td> 
+            
+      </tr>
+      {% endfor %}
+    </tbody>
+   
+  </table>
+  <div class="text-center container mt-5">
+    {% if page_obj.has_previous %}
+      <a class="poppins-font p-2" href="?page={{page_obj.previous_page_number}}">previous</a>
+    {% endif %}
+
+    <a class="p-2 active-btn poppins-font text-dark" style="background-color:lightgreen;">{{page_obj.number}}</a>
+    
+    {% if page_obj.has_next %}
+      <a class="p-2 poppins-font" href="?page={{ page_obj.next_page_number }}">next</a>
+    {% endif %}
+
+  </div>
+{% endblock content%}

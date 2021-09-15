@@ -1,0 +1,46 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="card" style="padding:5px; border: 0;">
+  <label>Search For Products:</label>
+<form method="get">
+  {{ myFilter.form }}
+  <button class="btn btn-success rounded" type="submit">Search</button>
+</form>
+</div>
+<hr>
+<div class="row" >
+  {% for product in page_obj %}
+  <div class="col-lg-4">
+    <div class="box-element product">
+      <img
+        src="{{product.imageURL}}"
+        alt=""
+        class="thumbnail"
+        style="width:120px; height:120px;"
+      />
+      <h6><strong>{{product.name}}</strong></h6>
+      <p>{{product.description}}</p>
+      <hr />
+      <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to cart</button>
+      <h4 style="float: right;">Kshs.{{product.price|floatformat:2}}</h4>
+    </div>
+    <br>
+  </div>
+ 
+
+  {% endfor %}
+ 
+  <div class="text-center container mt-5">
+    {% if page_obj.has_previous %}
+      <a class="poppins-font p-2" href="?page={{page_obj.previos_page_number}}">previous</a>
+    {% endif %}
+
+    <a class="p-2 active-btn poppins-font text-dark" style="background-color:#fff600;">{{page_obj.number}}</a>
+
+    {% if page_obj.has_next %}
+      <a class="p-2 poppins-font" href="?page={{ page_obj.next_page_number }}">next</a>
+    {% endif %}
+
+  </div>
+{% endblock %}
