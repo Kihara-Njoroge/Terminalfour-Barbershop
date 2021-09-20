@@ -9,6 +9,8 @@ urlpatterns = [
     path('', dashboard, name='dashboard'),
     path('invoices/', invoiceList, name='invoices'),
     path('add-invoice/', addInvoice, name='add_invoice'),
+      path('add-services/', addService, name='add_service'),
+
 
     path('cart/', cartPage, name='cart'),
     path('products/', Products, name='products'),
@@ -24,6 +26,7 @@ urlpatterns = [
     path('employees/<str:name>/', employeeEarning, name='employee-history'),
     path('employees/<str:name>/previous-month/', employeePreviousEarning, name='employee-prev-history'),
     path('add-employee/', addEmployee, name='add_employee'),
+
     
     path('commissions-earned/', Payroll, name='salaries'),
     path('previous_month_salaries/', previousPayRoll,
