@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% load static %} 
+{% block content %}
+<legend style="margin: 10px; padding: 5px; color: black">
+  Create Invoice
+  <a href="{% url 'invoices' %}">
+    <button type="submit" class="btn btn-success" style="float: right">
+      <i class="fas fa-list"> Invoice List </i>
+    </button></a
+  >
+</legend>
+<hr />
+<form method="POST" style="margin: 10px; padding: 5px">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-6">{{ form.name|as_crispy_field}}</div>
+    <div class="col-6">{{ form.percentage|as_crispy_field }}</div>
+  </div>
+  <button type="submit" class="btn btn-success" style="float: right">
+    Save
+  </button>
+</form>
+<br />
+{% endblock %}

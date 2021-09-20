@@ -38,16 +38,7 @@ def update_user_profile(sender, instance, created, **kwargs):
 
 
 class Employee(models.Model):
-    roles = (
-        ('Barber', 'Barber'),
-        ('Stylist', 'Stylist')
-    )
-    branch = (
-        ('feruzi', 'feruzi',),
-        ('fourways', 'fourways')
-    )
     name = models.CharField(max_length=254, null=False, blank=False)
-    role = models.CharField(max_length=254, choices=roles)
     email = models.EmailField()
     phone = PhoneField(blank=True, help_text='Contact phone number')
     id_number = models.IntegerField(unique=True)

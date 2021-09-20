@@ -7,6 +7,8 @@ from django.urls.conf import path
 from django.views.generic import View
 from django.contrib.auth import authenticate, get_user, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+from .decorators import unauthenticated_user, allowed_users, admin_only
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from datetime import datetime, date, timedelta
@@ -20,13 +22,13 @@ from .utils import *
 
 
 # Create your views here.
+@unauthenticated_user
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()  # load the profile instance created by the signal
-            user.profile.branch = form.cleaned_data.get('branch')
             user.save()
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
@@ -37,6 +39,7 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 # login
+@unauthenticated_user
 def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -57,6 +60,7 @@ def logoutUser(request):
 
 # Dashboard
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def dashboard(request):
     current_month = datetime.now().month
 
@@ -210,8 +214,9 @@ def dashboard(request):
     return render(request, 'index.html', context)
 #Invoices
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def invoiceList(request):
-    invoice = Invoice.objects.all().order_by('invoice_id')
+    invoice = Invoice.objects.all().order_by('-date_of_services')
     myFilter = InvoiceFilter(request.GET, queryset=invoice)
     invoices = myFilter.qs
     paginator = Paginator(invoices, 10)
@@ -223,6 +228,7 @@ def invoiceList(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def addInvoice(request):
     form = InvoiceForm()
     customers = Customer.objects.all()
@@ -245,8 +251,9 @@ def addInvoice(request):
 
 # Purschases
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def purchaseList(request):
-    purchase = Purchase.objects.all().order_by('purchase_id')
+    purchase = Purchase.objects.all().order_by('-date_of_purchase')
     myFilter = PurchaseFilter(request.GET, queryset=purchase)
     purchases = myFilter.qs
     paginator = Paginator(purchases, 10)
@@ -259,6 +266,7 @@ def purchaseList(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def addPurchase(request):
     form = PurchaseForm()
     if request.method == 'POST':
@@ -272,6 +280,7 @@ def addPurchase(request):
 
 #Employees
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def EmployeeList(request):
     employee = Employee.objects.all().order_by('name')
     paginator = Paginator(employee, 10)
@@ -283,6 +292,7 @@ def EmployeeList(request):
     return render(request, 'employee/employees.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def employeeEarning(request, name):
     current_month = datetime.now().month
     employee = Employee.objects.get(name=name)
@@ -306,6 +316,7 @@ def employeeEarning(request, name):
     return render(request, 'employee/employee_history.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def employeePreviousEarning(request, name):
     current_month = datetime.now().month - 1
     employee = Employee.objects.get(name=name)
@@ -332,6 +343,7 @@ def employeePreviousEarning(request, name):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def addEmployee(request):
     form = EmployeeForm()
     if request.method == 'POST':
@@ -346,6 +358,7 @@ def addEmployee(request):
 
 #Payrolls
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def Payroll(request):
     current_month = datetime.now().month
     employee = Employee.objects.all()
@@ -372,6 +385,7 @@ def Payroll(request):
     return render(request, 'employee/current-mon-payroll.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def previousPayRoll(request):
     current_month = datetime.now().month - 1
     employee = Employee.objects.all()
@@ -399,6 +413,7 @@ def previousPayRoll(request):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(admin_only, name='dispatch')
 class GeneratePDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('employee/previous_payroll_pdf.html')
@@ -437,7 +452,9 @@ class GeneratePDF(View):
         return HttpResponse("Not found")
 
 #Daily Reports
+
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def overallDailyReport(request):
     services = Service.objects.all()
     sales = Sale.objects.filter(date_of_sale__gte=timezone.now().replace(
@@ -477,7 +494,9 @@ def overallDailyReport(request):
     return render(request, 'reports/overall_daily_report.html', context)
 
 
+
 @method_decorator(login_required, name='dispatch')
+@method_decorator(admin_only, name='dispatch')
 class OverallDailyPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/overall_daily_report_pdf.html')
@@ -527,6 +546,7 @@ class OverallDailyPDF(View):
 
 # Feruzi daily Report
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def dailyReport(request):
     services = Service.objects.all()
     sales = Sale.objects.filter(date_of_sale__gte=timezone.now().replace(
@@ -557,6 +577,7 @@ def dailyReport(request):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(admin_only, name='dispatch')
 class DailyPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/feruzi_daily_report_pdf.html')
@@ -603,6 +624,7 @@ class DailyPDF(View):
 
 # Fourways Daily Report
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def dailyReport2(request):
     services = Service.objects.all()
     sales = Sale.objects.filter(date_of_sale__gte=timezone.now().replace(
@@ -631,6 +653,7 @@ def dailyReport2(request):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(admin_only, name='dispatch')
 class DailyPDF2(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/fourways_daily_report_pdf.html')
@@ -677,6 +700,7 @@ class DailyPDF2(View):
 
 # monthly Reports
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def OverallMonthlyReport(request):
     current_month = datetime.now().month
     sales = Sale.objects.filter(date_of_sale__month=current_month)
@@ -707,6 +731,7 @@ def OverallMonthlyReport(request):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(admin_only, name='dispatch')
 class OVERALLMONPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/overall_monthly_report_pdf.html')
@@ -755,6 +780,7 @@ class OVERALLMONPDF(View):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(admin_only, name='dispatch')
 class PreviousOVERALLPDF(View):
     def get(self, request, *args, **kwargs):
         template = get_template('reports/previou_mon_overall_report.html')
@@ -804,6 +830,7 @@ class PreviousOVERALLPDF(View):
 
 #Customers
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def CustomerList(request):
     customer = Customer.objects.all()
     myFilter = CustomerFilter(request.GET, queryset=customer)
@@ -816,6 +843,9 @@ def CustomerList(request):
 
     return render(request, 'customers/customers_list.html', context) 
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def CustomerHistory(request, name):
     customer = Customer.objects.get(name=name)
     invoice = Invoice.objects.filter(customer=customer)
@@ -830,6 +860,8 @@ def CustomerHistory(request, name):
 
     return render(request, 'customers/customer_history.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def CustomerSalesHistory(request, name):
     customer = Customer.objects.get(name=name)
     sales = Sale.objects.filter(customer=customer)
@@ -844,6 +876,8 @@ def CustomerSalesHistory(request, name):
 
     return render(request, 'customers/customer_sales_history.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def addCustomer(request):
     form = CustomerForm()
     if request.method == 'POST':
@@ -855,6 +889,8 @@ def addCustomer(request):
     context = {'form':form}
     return render(request, 'customers/add_customer.html',context )
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def Products(request):
     data = cartData(request)
 
@@ -875,6 +911,8 @@ def Products(request):
     return render(request, 'products/products.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def cartPage(request):
     data = cartData(request)
 
@@ -886,6 +924,8 @@ def cartPage(request):
     return render(request, 'cart/cart.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def addProduct(request):
     form = ProductForm()
     if request.method == 'POST':
@@ -897,6 +937,9 @@ def addProduct(request):
     context = {'form':form}
     return render(request, 'products/add_product.html', context)
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def salesList(request):
     sales = Sale.objects.all().order_by('date_of_sale')
     myFilter = SalesFilter(request.GET, queryset=sales)
@@ -909,6 +952,8 @@ def salesList(request):
     context = {'sales':sales, 'page_obj':page_obj}
     return render(request, 'products/sales_list.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def addSales(request):
     form = SalesForm()
 
@@ -920,3 +965,17 @@ def addSales(request):
     
     context = {'form':form}
     return render(request, 'products/add_sales.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def addService(request):
+    form = ServiceForm()
+
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    
+    context = {'form':form}
+    return render(request, 'invoice/add_service.html', context)

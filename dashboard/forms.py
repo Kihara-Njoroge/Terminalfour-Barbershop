@@ -25,23 +25,23 @@ class EmployeeForm(ModelForm):
         fields = '__all__'
 
 # branches
-branch = [
-    ('feruzi', 'feruzi'),
-    ('fourways', 'fourways')
-]
-
 
 class SignUpForm(UserCreationForm):
-    branch = forms.ChoiceField(choices=branch)
+
 
     class Meta:
         model = User
-        fields = ('username', 'branch', 'email', 'password1', 'password2', )
+        fields = ('username', 'email', 'password1', 'password2', )
 
 class CustomerForm(ModelForm):
     class Meta:
         model = Customer
         fields = "__all__"
+
+class ServiceForm(ModelForm):
+    class Meta:
+        model = Service
+        fields = '__all__'
 
 class ProductForm(ModelForm):
     class Meta:
