@@ -130,14 +130,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
 
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
@@ -145,8 +141,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 AWS_QUERYSTRING_AUTH = False
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = 'AKIA2BLYWF2X73Q6LPGX'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIA2BLYWF2XXVF74FVT'
+AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'terminal-four'
 
 
